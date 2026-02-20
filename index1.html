@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketMind | AI Sales & Marketing Intelligence</title>
+    <style>
+        :root {
+            --primary-blue: #0056b3;
+            --secondary-blue: #00a8e8;
+            --dark-bg: #0f172a;
+            --light-text: #f8fafc;
+            --card-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-blue);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 10%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 50px 5%;
+        }
+
+        .solution-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+            border: 1px solid #334155;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--secondary-blue);
+        }
+
+        .solution-card h3 {
+            color: var(--secondary-blue);
+            margin-top: 0;
+        }
+
+        .ai-interface {
+            margin: 50px 5%;
+            padding: 40px;
+            background: #000;
+            border-radius: 15px;
+            border: 1px solid var(--secondary-blue);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        input {
+            flex-grow: 1;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: white;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: var(--secondary-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #output {
+            margin-top: 30px;
+            padding: 20px;
+            background: #111;
+            border-left: 4px solid var(--secondary-blue);
+            min-height: 50px;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">MarketMind AI</div>
+    <nav>FastAPI | React | Gemini | IBM AI</nav>
+</header>
+
+<section class="hero">
+    <h1>Generative AI–Powered Sales & Marketing Intelligence Platform</h1>
+    <p>Empowering sales and marketing teams through AI-generated content and predictive analysis for improved business outcomes [1].</p>
+</section>
+
+<section class="solutions-grid">
+    <div class="solution-card">
+        <h3>Campaign Generation</h3>
+        <p>Instantly create data-driven marketing campaigns tailored to your audience [1].</p>
+    </div>
+    <div class="solution-card">
+        <h3>Sales Pitch Creation</h3>
+        <p>Generate personalized sales pitches to close deals faster [1].</p>
+    </div>
+    <div class="solution-card">
+        <h3>Lead Scoring</h3>
+        <p>Utilize predictive analysis to prioritize high-value leads [1].</p>
+    </div>
+    <div class="solution-card">
+        <h3>Market Analysis</h3>
+        <p>Gain deep insights into market trends using real-time generative AI [1].</p>
+    </div>
+    <div class="solution-card">
+        <h3>Business Insights</h3>
+        <p>Make data-driven decisions with automated business intelligence reports [1].</p>
+    </div>
+</section>
+
+<section class="ai-interface">
+    <h2>Connect to MarketMind LLM</h2>
+    <p>Enter your business data or objective to generate intelligence using <strong>Gemini</strong> or <strong>Groq</strong> [1].</p>
+    <div class="input-group">
+        <input type="text" id="userInput" placeholder="e.g., Generate a sales pitch for a new tech SaaS...">
+        <button onclick="generateAIResponse()">Generate Intelligence</button>
+    </div>
+    <div id="output">Waiting for input...</div>
+</section>
+
+<footer>
+    Built with: FastAPI, React, Gemini, IBM AI, Groq, & Hugging Face [1].
+</footer>
+
+<script>
+    /**
+     * To connect to your LLM (Gemini/Groq) via your FastAPI backend:
+     * 1. Your FastAPI endpoint would be hosted at a URL (e.g., http://localhost:8000/generate).
+     * 2. The script below sends the user prompt to that backend.
+     */
+    async function generateAIResponse() {
+        const input = document.getElementById('userInput').value;
+        const outputDiv = document.getElementById('output');
+        
+        if (!input) {
+            outputDiv.innerText = "Please enter a prompt.";
+            return;
+        }
+
+        outputDiv.innerText = "Processing through MarketMind Intelligence Engine...";
+
+        try {
+            /* 
+               The fetch call would connect to your FastAPI backend 
+               which handles the Gemini/Groq API key logic.
+            */
+            // const response = await fetch('YOUR_FASTAPI_BACKEND_URL/generate', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ prompt: input })
+            // });
+            // const data = await response.json();
+            // outputDiv.innerText = data.result;
+
+            // Simulating AI response for demonstration based on the sources:
+            setTimeout(() => {
+                outputDiv.innerText = "MarketMind Insight: Based on predictive analysis, your campaign should focus on the 18-24 demographic using personalized AI content. Potential Lead Score: 85/100.";
+            }, 2000);
+
+        } catch (error) {
+            outputDiv.innerText = "Error connecting to the LLM backend. Please check your FastAPI server.";
+        }
+    }
+</script>
+
+</body>
+</html>
