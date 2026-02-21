@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MarketMind — Generative AI Sales & Marketing Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050810;
+    --bg2: #080d1a;
+    --card: #0d1526;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #f97316;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --border: rgba(0,229,255,0.12);
+    --glow: 0 0 40px rgba(0,229,255,0.15);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(5,8,16,0.85); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.03em; }
+  .logo span { color: var(--accent); }
+  nav ul { display: flex; gap: 2.5rem; list-style: none; }
+  nav ul a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+  nav ul a:hover { color: var(--accent); }
+  .nav-cta { background: var(--accent); color: #050810 !important; padding: 0.55rem 1.4rem; border-radius: 6px; font-weight: 700 !important; }
+  .nav-cta:hover { box-shadow: 0 0 20px rgba(0,229,255,0.5) !important; }
+  .hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    position: relative; padding: 8rem 2rem 4rem; text-align: center; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,229,255,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 80% 60%, rgba(124,58,237,0.07) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 40% at 20% 70%, rgba(249,115,22,0.05) 0%, transparent 50%);
+  }
+  .grid-bg {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px; animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove { from { transform: translateY(0); } to { transform: translateY(60px); } }
+  .hero-content { position: relative; z-index: 2; max-width: 900px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 1rem; background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.25);
+    border-radius: 50px; font-size: 0.8rem; font-weight: 500; color: var(--accent);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+  h1 { font-family: 'Syne', sans-serif; font-size: clamp(3rem, 7vw, 6rem); font-weight: 800; line-height: 1.0; letter-spacing: -0.03em; margin-bottom: 1.5rem; animation: fadeUp 0.8s ease 0.1s both; }
+  h1 .gradient-text { background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 50%, #f97316 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-desc { font-size: 1.15rem; color: var(--muted); max-width: 620px; margin: 0 auto 2.5rem; line-height: 1.7; font-weight: 300; animation: fadeUp 0.8s ease 0.2s both; }
+  .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.8s ease 0.3s both; }
+  .btn-primary { padding: 0.85rem 2rem; background: var(--accent); color: #050810; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; transition: all 0.3s; letter-spacing: 0.02em; }
+  .btn-primary:hover { box-shadow: 0 0 30px rgba(0,229,255,0.4); transform: translateY(-2px); }
+  .btn-secondary { padding: 0.85rem 2rem; background: transparent; color: var(--text); font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem; border-radius: 8px; text-decoration: none; border: 1px solid var(--border); cursor: pointer; transition: all 0.3s; }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.05); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .stats { display: flex; justify-content: center; gap: 4rem; padding: 3rem 2rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(13,21,38,0.5); flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .stat-label { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.3rem; }
+  section { padding: 7rem 2rem; position: relative; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .section-tag { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1.2rem; line-height: 1.1; }
+  .section-desc { color: var(--muted); font-size: 1rem; line-height: 1.7; max-width: 520px; font-weight: 300; }
+  .features-header { text-align: center; margin-bottom: 5rem; }
+  .features-header .section-desc { margin: 0 auto; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .feature-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; position: relative; overflow: hidden; transition: all 0.4s; }
+  .feature-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,229,255,0.05) 0%, transparent 60%); opacity: 0; transition: opacity 0.4s; }
+  .feature-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-4px); box-shadow: var(--glow); }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.2rem; }
+  .icon-cyan { background: rgba(0,229,255,0.1); } .icon-purple { background: rgba(124,58,237,0.15); } .icon-orange { background: rgba(249,115,22,0.12); }
+  .icon-green { background: rgba(34,197,94,0.1); } .icon-pink { background: rgba(236,72,153,0.1); } .icon-blue { background: rgba(59,130,246,0.1); }
+  .feature-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .feature-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; font-weight: 300; }
+  .hiw { background: var(--bg2); }
+  .hiw-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+  .steps { display: flex; flex-direction: column; gap: 2rem; }
+  .step { display: flex; gap: 1.5rem; align-items: flex-start; opacity: 0.5; transition: opacity 0.3s; }
+  .step:hover, .step.active { opacity: 1; }
+  .step-num { width: 40px; height: 40px; border-radius: 10px; background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.3); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--accent); flex-shrink: 0; }
+  .step-text h4 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.4rem; font-size: 1rem; }
+  .step-text p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; font-weight: 300; }
+  .dashboard-mockup { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--glow); }
+  .mock-header { background: rgba(255,255,255,0.03); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); }
+  .mock-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .mock-title-bar { flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; margin-left: 1rem; }
+  .mock-body { padding: 1.5rem; }
+  .mock-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 1rem; }
+  .mock-metric { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem; }
+  .mock-metric-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+  .mock-metric-val { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--accent); }
+  .mock-chart { background: rgba(255,255,255,0.03); border-radius: 10px; height: 100px; display: flex; align-items: flex-end; gap: 6px; padding: 1rem; margin-bottom: 1rem; }
+  .bar { flex: 1; border-radius: 4px 4px 0 0; animation: barGrow 1s ease both; }
+  @keyframes barGrow { from { height: 0 !important; } }
+  .mock-lead { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem; }
+  .mock-lead-title { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .lead-item { display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0; border-bottom: 1px solid var(--border); font-size: 0.75rem; }
+  .lead-item:last-child { border-bottom: none; }
+  .lead-score { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem; }
+  .score-high { color: #22c55e; } .score-med { color: var(--accent3); } .score-low { color: var(--muted); }
+  .tech-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-top: 3rem; }
+  .tech-pill { display: flex; align-items: center; gap: 0.6rem; padding: 0.65rem 1.4rem; background: var(--card); border: 1px solid var(--border); border-radius: 50px; font-size: 0.88rem; font-weight: 500; transition: all 0.3s; cursor: default; }
+  .tech-pill:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.05); transform: translateY(-2px); }
+  .demo { background: var(--bg2); }
+  .demo-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: start; }
+  .mode-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .mode-tab { padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .mode-tab.active { background: var(--accent); color: #050810; border-color: var(--accent); }
+  .mode-tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+  .quick-prompts { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .quick-prompt { display: flex; gap: 0.8rem; align-items: center; padding: 0.8rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+  .quick-prompt:hover { border-color: var(--accent); background: rgba(0,229,255,0.04); }
+  .quick-prompt span { color: var(--accent); }
+  .api-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--muted); margin-bottom: 1rem; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+  .status-dot.offline { background: #ef4444; animation: none; }
+  .chat-window { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--glow); }
+  .chat-header { padding: 1rem 1.5rem; background: rgba(0,229,255,0.05); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.8rem; }
+  .chat-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .chat-name { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; }
+  .chat-status { font-size: 0.72rem; color: #22c55e; }
+  .chat-model-badge { margin-left: auto; font-size: 0.68rem; padding: 0.2rem 0.6rem; background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.2); border-radius: 20px; color: var(--accent); }
+  .chat-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; max-height: 380px; overflow-y: auto; }
+  .chat-body::-webkit-scrollbar { width: 4px; }
+  .chat-body::-webkit-scrollbar-track { background: transparent; }
+  .chat-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .chat-msg { display: flex; flex-direction: column; gap: 0.3rem; max-width: 88%; animation: fadeUp 0.4s ease both; }
+  .chat-msg.user { align-self: flex-end; align-items: flex-end; }
+  .chat-msg.ai { align-self: flex-start; }
+  .chat-bubble { padding: 0.75rem 1rem; border-radius: 14px; font-size: 0.85rem; line-height: 1.6; white-space: pre-wrap; }
+  .user .chat-bubble { background: var(--accent); color: #050810; font-weight: 500; border-bottom-right-radius: 4px; }
+  .ai .chat-bubble { background: rgba(255,255,255,0.06); color: var(--text); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+  .chat-time { font-size: 0.68rem; color: var(--muted); }
+  .model-tag { font-size: 0.65rem; color: var(--accent); opacity: 0.7; }
+  .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 0.75rem 1rem; }
+  .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: typing 1.2s ease infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
+  .chat-input-row { margin: 0 1.5rem 1.5rem; display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem 1rem; transition: border-color 0.2s; }
+  .chat-input-row:focus-within { border-color: rgba(0,229,255,0.4); }
+  .chat-input-text { flex: 1; background: none; border: none; outline: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; }
+  .chat-input-text::placeholder { color: var(--muted); }
+  .send-btn { width: 30px; height: 30px; background: var(--accent); border: none; border-radius: 7px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #050810; font-size: 1rem; transition: box-shadow 0.3s; }
+  .send-btn:hover { box-shadow: 0 0 15px rgba(0,229,255,0.4); }
+  .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .cta-section { text-align: center; padding: 8rem 2rem; position: relative; overflow: hidden; }
+  .cta-glow { position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%); left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+  .cta-section h2 { font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1.2rem; position: relative; }
+  .cta-section p { color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem; font-weight: 300; position: relative; }
+  .cta-actions { position: relative; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  footer { border-top: 1px solid var(--border); padding: 3rem 4rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { color: var(--muted); font-size: 0.82rem; }
+  .footer-tags { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .footer-tag { padding: 0.3rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 50px; font-size: 0.72rem; color: var(--muted); }
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; animation: float 8s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    .hiw-layout, .demo-layout { grid-template-columns: 1fr; gap: 3rem; }
+    footer { flex-direction: column; text-align: center; }
+    .stats { gap: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Market<span>Mind</span></div>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#tech">Tech Stack</a></li>
+    <li><a href="#demo" class="nav-cta">Get Started</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-bg"></div>
+  <div class="orb" style="width:400px;height:400px;background:rgba(0,229,255,0.04);top:-100px;left:-100px;animation-delay:-2s;"></div>
+  <div class="orb" style="width:300px;height:300px;background:rgba(124,58,237,0.06);bottom:0;right:-50px;animation-delay:-4s;"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="badge-dot"></span> Generative AI · Sales & Marketing</div>
+    <h1>Intelligent Sales & Marketing,<br><span class="gradient-text">Powered by Gen AI</span></h1>
+    <p class="hero-desc">MarketMind transforms how sales and marketing teams work — generating campaigns, writing pitches, scoring leads, and delivering predictive insights with AI precision.</p>
+    <div class="hero-actions">
+      <a href="#demo" class="btn-primary">See Live Demo →</a>
+      <a href="#features" class="btn-secondary">Explore Features</a>
+    </div>
+  </div>
+</section>
+
+<div class="stats reveal">
+  <div class="stat"><div class="stat-num">10×</div><div class="stat-label">Faster Campaigns</div></div>
+  <div class="stat"><div class="stat-num">87%</div><div class="stat-label">Lead Accuracy</div></div>
+  <div class="stat"><div class="stat-num">5 AI</div><div class="stat-label">Models Integrated</div></div>
+  <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Scalable Insights</div></div>
+</div>
+
+<section id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <div class="section-tag">Core Capabilities</div>
+      <h2 class="section-title">Everything your team needs,<br>powered by AI</h2>
+      <p class="section-desc">Six powerful AI engines working together to supercharge your sales and marketing pipeline.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal"><div class="feature-icon icon-cyan">🎯</div><div class="feature-title">Campaign Generation</div><p class="feature-desc">Generate full multi-channel campaigns in seconds using Gemini and Groq LLMs tuned for marketing.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon icon-purple">💬</div><div class="feature-title">AI Sales Pitch Creator</div><p class="feature-desc">Create hyper-personalized pitches tailored to each prospect's industry, role, and pain points.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon icon-orange">📊</div><div class="feature-title">Lead Scoring Engine</div><p class="feature-desc">AI-powered lead scoring using behavioral signals and firmographic data. Prioritize your pipeline.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon icon-green">🔍</div><div class="feature-title">Market Analysis</div><p class="feature-desc">Real-time competitive intelligence and market trend analysis powered by AI models.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon icon-pink">💡</div><div class="feature-title">Business Insights</div><p class="feature-desc">Predictive analytics and actionable insights surfaced automatically in real time.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon icon-blue">⚡</div><div class="feature-title">Real-Time Processing</div><p class="feature-desc">Built on FastAPI for sub-100ms responses. Scale from startup to enterprise seamlessly.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="hiw" id="how-it-works">
+  <div class="container">
+    <div class="hiw-layout">
+      <div class="reveal">
+        <div class="section-tag">How It Works</div>
+        <h2 class="section-title">From insight to<br>action in minutes</h2>
+        <p class="section-desc" style="margin-bottom:3rem;">MarketMind integrates directly into your existing workflow, adding AI intelligence at every step.</p>
+        <div class="steps">
+          <div class="step active"><div class="step-num">01</div><div class="step-text"><h4>Connect Your Data</h4><p>Sync your CRM, campaigns, and analytics. MarketMind understands your business context instantly.</p></div></div>
+          <div class="step"><div class="step-num">02</div><div class="step-text"><h4>AI Processes & Analyzes</h4><p>Gemini and Groq work in parallel to score leads, generate copy, and surface insights.</p></div></div>
+          <div class="step"><div class="step-num">03</div><div class="step-text"><h4>Get Actionable Outputs</h4><p>Receive campaigns, pitches, and prioritized lead lists ready to deploy immediately.</p></div></div>
+          <div class="step"><div class="step-num">04</div><div class="step-text"><h4>Optimize Continuously</h4><p>MarketMind learns from outcomes, improving recommendations with every interaction.</p></div></div>
+        </div>
+      </div>
+      <div class="dashboard-mockup reveal">
+        <div class="mock-header">
+          <div class="mock-dot" style="background:#ff5f57;"></div>
+          <div class="mock-dot" style="background:#febc2e;"></div>
+          <div class="mock-dot" style="background:#28c840;"></div>
+          <div class="mock-title-bar"></div>
+        </div>
+        <div class="mock-body">
+          <div class="mock-metrics">
+            <div class="mock-metric"><div class="mock-metric-label">Hot Leads</div><div class="mock-metric-val">142</div></div>
+            <div class="mock-metric"><div class="mock-metric-label">Campaigns</div><div class="mock-metric-val">28</div></div>
+            <div class="mock-metric"><div class="mock-metric-label">Conv. Rate</div><div class="mock-metric-val">31%</div></div>
+          </div>
+          <div class="mock-chart">
+            <div class="bar" style="height:40%;background:rgba(0,229,255,0.3);animation-delay:0.1s"></div>
+            <div class="bar" style="height:65%;background:rgba(0,229,255,0.4);animation-delay:0.2s"></div>
+            <div class="bar" style="height:50%;background:rgba(0,229,255,0.3);animation-delay:0.3s"></div>
+            <div class="bar" style="height:80%;background:rgba(0,229,255,0.5);animation-delay:0.4s"></div>
+            <div class="bar" style="height:60%;background:rgba(0,229,255,0.4);animation-delay:0.5s"></div>
+            <div class="bar" style="height:90%;background:var(--accent);animation-delay:0.6s"></div>
+            <div class="bar" style="height:75%;background:rgba(0,229,255,0.5);animation-delay:0.7s"></div>
+          </div>
+          <div class="mock-lead">
+            <div class="mock-lead-title">🔥 Top Leads Today</div>
+            <div class="lead-item"><span>Acme Corp</span><span class="lead-score score-high">94</span></div>
+            <div class="lead-item"><span>TechFlow Inc</span><span class="lead-score score-high">88</span></div>
+            <div class="lead-item"><span>DataVault</span><span class="lead-score score-med">71</span></div>
+            <div class="lead-item"><span>CloudBase</span><span class="lead-score score-low">52</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo" class="demo">
+  <div class="container">
+    <div class="demo-layout">
+      <div class="reveal">
+        <div class="section-tag">Live AI Demo</div>
+        <h2 class="section-title">Real AI.<br>Real responses.</h2>
+        <p class="section-desc" style="margin-bottom:1.5rem;">Powered by Gemini & Groq. Choose a mode and ask anything about your sales and marketing.</p>
+        <div class="api-status">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">Connecting to backend...</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;font-weight:500;">Choose AI Mode:</p>
+        <div class="mode-tabs">
+          <button class="mode-tab active" onclick="setMode('chat', this)">💬 Chat</button>
+          <button class="mode-tab" onclick="setMode('campaign', this)">🎯 Campaign</button>
+          <button class="mode-tab" onclick="setMode('pitch', this)">💼 Pitch</button>
+          <button class="mode-tab" onclick="setMode('leads', this)">📊 Leads</button>
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.8rem;font-weight:500;">Quick prompts:</p>
+        <div class="quick-prompts">
+          <div class="quick-prompt" onclick="fillPrompt('Generate a Q1 campaign for SaaS companies targeting CTOs')"><span>→</span> Generate a Q1 SaaS campaign</div>
+          <div class="quick-prompt" onclick="fillPrompt('Write a sales pitch for a CFO audience focusing on ROI')"><span>→</span> Write a CFO sales pitch</div>
+          <div class="quick-prompt" onclick="fillPrompt('Analyze market trends in AI-powered CRM software for 2025')"><span>→</span> Analyze AI CRM market trends</div>
+        </div>
+      </div>
+      <div class="chat-window reveal">
+        <div class="chat-header">
+          <div class="chat-avatar">🤖</div>
+          <div>
+            <div class="chat-name">MarketMind AI</div>
+            <div class="chat-status" id="chatStatus">● Connecting...</div>
+          </div>
+          <div class="chat-model-badge" id="modelBadge">Gemini + Groq</div>
+        </div>
+        <div class="chat-body" id="chatBody">
+          <div class="chat-msg ai">
+            <div class="chat-bubble">Hi! I'm MarketMind. Choose a mode on the left and ask me to generate campaigns, score leads, create pitches, or analyze your market. Powered by real Gemini and Groq AI! 🚀</div>
+            <div class="chat-time">Just now</div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input-text" id="chatInput" type="text" placeholder="Ask MarketMind anything..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="send-btn" id="sendBtn" onclick="sendMsg()">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tech" style="background:var(--bg2);text-align:center;">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-tag">Technology</div>
+      <h2 class="section-title">Built on world-class AI infrastructure</h2>
+      <p class="section-desc" style="margin:0 auto;">Every component chosen for performance, reliability, and AI capability.</p>
+    </div>
+    <div class="tech-grid reveal">
+      <div class="tech-pill"><span>⚡</span> FastAPI</div>
+      <div class="tech-pill"><span>⚛️</span> React</div>
+      <div class="tech-pill"><span>🌐</span> JavaScript</div>
+      <div class="tech-pill"><span>✨</span> Gemini AI</div>
+      <div class="tech-pill"><span>🔵</span> IBM AI</div>
+      <div class="tech-pill"><span>⚡</span> Groq</div>
+      <div class="tech-pill"><span>🤗</span> Hugging Face</div>
+    </div>
+    <div class="reveal" style="margin-top:4rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;max-width:800px;margin-left:auto;margin-right:auto;">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;text-align:center;"><div style="font-size:2rem;margin-bottom:0.5rem;">🖥️</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;">Frontend</div><div style="color:var(--muted);font-size:0.8rem;">HTML + CSS + JS</div></div>
+      <div style="display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:1.5rem;font-weight:700;">→</div>
+      <div style="background:var(--card);border:1px solid rgba(0,229,255,0.3);border-radius:14px;padding:1.5rem;text-align:center;box-shadow:var(--glow);"><div style="font-size:2rem;margin-bottom:0.5rem;">🧠</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;">AI Orchestration</div><div style="color:var(--muted);font-size:0.8rem;">FastAPI Backend</div></div>
+      <div style="display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:1.5rem;font-weight:700;">→</div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;text-align:center;"><div style="font-size:2rem;margin-bottom:0.5rem;">🤖</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;">AI Models</div><div style="color:var(--muted);font-size:0.8rem;">Gemini · IBM · Groq · HF</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <h2 class="reveal">Ready to supercharge<br>your <span class="gradient-text">sales & marketing?</span></h2>
+  <p class="reveal">MarketMind — the AI platform built for the future of intelligent business growth.</p>
+  <div class="cta-actions reveal">
+    <a href="#demo" class="btn-primary">Try MarketMind →</a>
+    <a href="#features" class="btn-secondary">View All Features</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Market<span>Mind</span></div>
+  <div class="footer-tags">
+    <span class="footer-tag">Generative AI</span>
+    <span class="footer-tag">Agentic AI</span>
+    <span class="footer-tag">AI & Machine Learning</span>
+  </div>
+  <div class="footer-copy">Built for SmartInternz Hackathon 2025</div>
+</footer>
+
+<script>
+const BACKEND = "http://localhost:8000";
+let currentMode = "chat";
+let isLoading = false;
+
+const modeConfig = {
+  chat:     { endpoint: "/chat",     badge: "💬 Gemini" },
+  campaign: { endpoint: "/campaign", badge: "🎯 Groq"   },
+  pitch:    { endpoint: "/pitch",    badge: "💼 Gemini" },
+  leads:    { endpoint: "/chat",     badge: "📊 Groq"   },
+};
+
+async function checkBackend() {
+  try {
+    const res = await fetch(`${BACKEND}/`, { signal: AbortSignal.timeout(3000) });
+    if (res.ok) {
+      document.getElementById('statusDot').classList.remove('offline');
+      document.getElementById('statusText').textContent = 'Backend connected ✅';
+      document.getElementById('chatStatus').textContent = '● Online — Powered by Gemini + Groq';
+      document.getElementById('chatStatus').style.color = '#22c55e';
+    }
+  } catch {
+    document.getElementById('statusDot').classList.add('offline');
+    document.getElementById('statusText').textContent = 'Backend offline — run: uvicorn main:app --reload';
+    document.getElementById('chatStatus').textContent = '● Backend offline';
+    document.getElementById('chatStatus').style.color = '#ef4444';
+  }
+}
+
+checkBackend();
+setInterval(checkBackend, 10000);
+
+function setMode(mode, el) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('modelBadge').textContent = modeConfig[mode].badge;
+}
+
+function addMsg(text, role, modelLabel = '') {
+  const body = document.getElementById('chatBody');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  div.innerHTML = `
+    <div class="chat-bubble">${text.replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>
+    <div class="chat-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}${modelLabel ? ` · <span class="model-tag">${modelLabel}</span>` : ''}</div>
+  `;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+
+function showTyping() {
+  const body = document.getElementById('chatBody');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ai'; div.id = 'typing';
+  div.innerHTML = `<div class="chat-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+async function sendMsg() {
+  if (isLoading) return;
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  addMsg(msg, 'user');
+  input.value = '';
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  showTyping();
+  const cfg = modeConfig[currentMode];
+  try {
+    const res = await fetch(`${BACKEND}${cfg.endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg, mode: currentMode }),
+    });
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+    const data = await res.json();
+    removeTyping();
+    addMsg(data.reply, 'ai', data.model);
+  } catch (err) {
+    removeTyping();
+    if (err.message.includes('fetch') || err.message.includes('Failed')) {
+      addMsg('⚠️ Cannot reach backend. Make sure it\'s running:\n\nuvicorn main:app --reload\n\nThen refresh this page.', 'ai');
+    } else {
+      addMsg(`⚠️ Error: ${err.message}`, 'ai');
+    }
+  } finally {
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+  }
+}
+
+function fillPrompt(text) {
+  document.getElementById('chatInput').value = text;
+  document.getElementById('chatInput').focus();
+  document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(el => { if (el.isIntersecting) el.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+document.querySelectorAll('.step').forEach(step => {
+  step.addEventListener('mouseenter', () => {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    step.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
+```
+
+Copy this → paste into a new file in VS Code → save as `marketmind_v2.html` ✅
